@@ -1,0 +1,43 @@
+version: '3'
+services:
+  wordpress:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - mariadb
+    environment:
+      WWWUSER: '${WWWUSER}'
+    container_name: 'wordpress'
+    volumes:
+      - '.:/var/www/html/wordpress'
+    networks:
+      - apache
+  mariadb:
+    image: 'mysql:8.0.31'
+    ports:
+      - '33062:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'yousef'
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_DATABASE: 'wordpress'
+      MYSQL_USER: 'yousef'
+      MYSQL_PASSWORD: 'yousef'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - 'mariadb:/var/lib/mysql'
+    networks:
+      - wordpress
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-pyousef" ]
+      retries: 3
+      timeout: 5s
+
+networks:
+  apache:
+    driver: bridge
+volumes:
+  mariadb:
+    driver: local
