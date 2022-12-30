@@ -5,7 +5,7 @@ services:
       context: ./docker
       dockerfile: Dockerfile
     ports:
-      - 80:80
+      - 81:80
     depends_on:
       - mariadb
     environment:
@@ -14,7 +14,7 @@ services:
     volumes:
       - '.:/var/www/html/wordpress'
     networks:
-      - apache
+      - wordpress
   mariadb:
     image: 'mysql:8.0.31'
     ports:
@@ -36,7 +36,7 @@ services:
       timeout: 5s
 
 networks:
-  apache:
+  wordpress:
     driver: bridge
 volumes:
   mariadb:
